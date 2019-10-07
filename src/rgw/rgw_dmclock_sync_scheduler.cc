@@ -27,7 +27,7 @@ int SyncScheduler::add_request(const client_id& client, const ReqParams& params,
     }
     queue.request_completed();
     // Perform a blocking wait until the request callback is called
-    if (std::unique_lock<std::mutex> lk(req_mtx); rstate != ReqState::Wait) {
+    if (std::unique_lock<std::mutex> lk(req_mtx); rstate == ReqState::Wait) {
       req_cv.wait(lk, [&rstate] {return rstate != ReqState::Wait;});
     }
     if (rstate == ReqState::Cancelled) {
